@@ -1,4 +1,4 @@
-package main
+package core
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/go-retryablehttp"
 )
 
-type info struct {
+type Info struct {
 	url          string
 	location     string
 	length       int64
@@ -27,10 +27,10 @@ type piece struct {
 	done  bool
 }
 
-func make_info(url string, location string, pieces int) info {
+func Make_info(url string, location string, pieces int) Info {
 	len := get_length(url)
 
-	return info{url, location, len, pieces, len / int64(pieces)}
+	return Info{url, location, len, pieces, len / int64(pieces)}
 
 }
 
@@ -51,15 +51,16 @@ func check(e error) {
 		panic(e)
 	}
 }
-func download_Piece(wg *sync.WaitGroup, p *piece, inf info) {
+func download_Piece(wg *sync.WaitGroup, p *piece, inf Info) {
 	defer wg.Done()
+	os.Mkdir("tmp", 0777)
 	addr := "./tmp/dat" + fmt.Sprint(p.index)
 	f, err := os.Create(addr)
 	check(err)
 	defer f.Close()
 
 	retryClient := retryablehttp.NewClient()
-	retryClient.RetryMax = 10
+	retryClient.RetryMax = 20
 	retryClient.Logger = nil
 
 	client := retryClient.StandardClient()
@@ -77,7 +78,7 @@ func download_Piece(wg *sync.WaitGroup, p *piece, inf info) {
 	fmt.Printf("Downloaded a file %s with size %d\n", addr, size)
 }
 
-func make_pieces(inf info) []piece {
+func make_pieces(inf Info) []piece {
 	pieces := make([]piece, inf.pieces)
 	for i := 0; i < inf.pieces; i++ {
 		if i == 0 {
@@ -98,32 +99,34 @@ func make_pieces(inf info) []piece {
 	return pieces
 }
 
-func merge(inf info, pieces []piece) {
-	f, err := os.OpenFile("try.mkv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func merge(inf Info, pieces []piece) error {
+	f, err := os.OpenFile(inf.location, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 	for i := 0; i < inf.pieces; i++ {
 		if !pieces[i].done {
 			log.Fatal("Piece not downloaded")
+			return fmt.Errorf("Piece %d not downloaded", i)
 		}
 		addr := "./tmp/dat" + fmt.Sprint(i)
 		data, err := ioutil.ReadFile(addr)
 		check(err)
 		if _, err := f.Write(data); err != nil {
 			log.Fatal(err)
+			return err
 		}
 	}
 	if err := f.Close(); err != nil {
 		log.Fatal(err)
+		return err
 	}
-
+	return nil
 }
-func Download(inf info) {
-
+func Download(inf Info) error {
 	//make pieces
 	pieces := make_pieces(inf)
-
 	//download pieces
 	var wg sync.WaitGroup
 	for i := 0; i < inf.pieces; i++ {
@@ -133,7 +136,13 @@ func Download(inf info) {
 	wg.Wait()
 
 	//Merge Pieces
-	merge(inf, pieces)
+	err := merge(inf, pieces)
+	//cleanup
+	os.RemoveAll("tmp")
+	if err != nil {
+		return err
+	}
 
-	fmt.Println("Download complete")
+	return nil
+
 }

@@ -1,10 +1,22 @@
+/*
+Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package main
 
-func main() {
-	info := make_info(
-		"https://nl34.seedr.cc/ff_get/972039482/Rick.and.Morty.S05E07.720p.WEBRip.x264-BAE.mkv?st=pwXieCnQodFquEjH5HFWsg&e=1628065458",
-		"yts.jpg", 20)
-	Download(info)
-	Download_Seq(info)
+import "github.com/KushagraIndurkhya/fetch/cmd"
 
+func main() {
+	cmd.Execute()
 }
