@@ -42,7 +42,6 @@ utilizing multiple threads and downloading file chunks in parallel`,
 			cmd.Help()
 			os.Exit(0)
 		}
-
 		location, err := cmd.Flags().GetString("path")
 		if err != nil || location == "" {
 			location = viper.GetString("Default_Path")
@@ -52,16 +51,25 @@ utilizing multiple threads and downloading file chunks in parallel`,
 		verbose, err := cmd.Flags().GetBool("verbose")
 		cobra.CheckErr(err)
 
-		start_time := time.Now()
 		info := core.Make_info(
 			args[0],
 			args[1],
 			location, chunks)
-
-		if core.Download(info, verbose) == nil {
-			fmt.Printf("File %s downloaded in %f seconds ", args[1], time.Since(start_time).Seconds())
-		} else {
-			fmt.Printf("Something Went Wrong %s ", err)
+		seq, err := cmd.Flags().GetBool("seq")
+		start_time := time.Now()
+		if err == nil && seq {
+			if core.Download_Seq(info, verbose) == nil {
+				fmt.Printf("File %s downloaded in %f seconds ", args[1], time.Since(start_time).Seconds())
+			} else {
+				fmt.Printf("Something Went Wrong %s ", err)
+			}
+		}
+		if err == nil && !seq {
+			if core.Download(info, verbose) == nil {
+				fmt.Printf("File %s downloaded in %f seconds ", args[1], time.Since(start_time).Seconds())
+			} else {
+				fmt.Printf("Something Went Wrong %s ", err)
+			}
 		}
 	},
 }
@@ -83,6 +91,8 @@ func init() {
 	rootCmd.PersistentFlags().String("path", "", "Specify Download Location of the file")
 	rootCmd.PersistentFlags().Bool("verbose", false, "Specify Verbosity of the output")
 	rootCmd.PersistentFlags().Int("threads", 20, "Specify Number of threads to be used")
+
+	rootCmd.LocalFlags().Bool("seq", false, "Download the file sequentially instead of parallel downloading")
 }
 
 // initConfig reads in config file and ENV variables if set.
