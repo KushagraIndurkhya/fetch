@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func Download_Seq(inf Info) error {
+func Download_Seq(inf Info, verbose bool) error {
 	resp, err := http.Get(inf.url)
 	if err != nil {
 		return err

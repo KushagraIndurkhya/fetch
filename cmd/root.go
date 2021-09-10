@@ -1,5 +1,5 @@
 /*
-Copyright © 2021 NAME HERE <EMAIL ADDRESS>
+Copyright © 2021 Kushagra Indurkhya <kushagraindurkhya7@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,24 +31,34 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "fetch",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "fetch <URL> <filename>",
+	Short: "A CLI for fast downloads ",
+	Long: `Fetch is a CLI for downloading files written in Go that enables user to get fast downloads by 
+utilizing multiple threads and downloading file chunks in parallel`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Help()
+			os.Exit(0)
+		}
+
+		location, err := cmd.Flags().GetString("path")
+		if err != nil || location == "" {
+			location = viper.GetString("Default_Path")
+		}
+		chunks, err := cmd.Flags().GetInt("threads")
+		cobra.CheckErr(err)
+		verbose, err := cmd.Flags().GetBool("verbose")
+		cobra.CheckErr(err)
 
 		start_time := time.Now()
 		info := core.Make_info(
 			args[0],
-			"$HOME/Downloads"+"/"+args[1], 20)
-		err := core.Download(info)
-		if err == nil {
+			args[1],
+			location, chunks)
+
+		if core.Download(info, verbose) == nil {
 			fmt.Printf("File %s downloaded in %f seconds ", args[1], time.Since(start_time).Seconds())
 		} else {
 			fmt.Printf("Something Went Wrong %s ", err)
@@ -70,10 +80,9 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fetch.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().String("path", "", "Specify Download Location of the file")
+	rootCmd.PersistentFlags().Bool("verbose", false, "Specify Verbosity of the output")
+	rootCmd.PersistentFlags().Int("threads", 20, "Specify Number of threads to be used")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -90,6 +99,8 @@ func initConfig() {
 		viper.AddConfigPath(home)
 		viper.SetConfigType("yaml")
 		viper.SetConfigName(".fetch")
+
+		viper.SetDefault("Default_Path", home+"/Downloads")
 
 	}
 
