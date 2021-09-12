@@ -57,8 +57,6 @@ var downloadCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		start_time := time.Now()
 
-		fmt.Print(info)
-
 		hist.FilePath = info.Location + "/" + info.NAME
 		hist.FileName = info.NAME
 		hist.FileSize = fmt.Sprint(info.Length)
