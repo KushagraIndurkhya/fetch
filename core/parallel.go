@@ -130,7 +130,6 @@ func merge(inf Info, pieces []piece) error {
 func Download(inf Info, verbose bool) error {
 	//make pieces
 	pieces := make_pieces(inf)
-	fmt.Print(inf)
 	//download pieces
 	var wg sync.WaitGroup
 	for i := 0; i < inf.Pieces; i++ {

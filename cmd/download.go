@@ -64,8 +64,6 @@ var downloadCmd = &cobra.Command{
 		hist.FileSize = fmt.Sprint(info.Length)
 		hist.Date = start_time.Format("2006-01-02 15:04:05")
 		hist.Success = "Downloading"
-
-		fmt.Println("Downloading Started")
 		if seq {
 			if core.Download_Seq(info, verbose) == nil {
 				fmt.Printf("File %s downloaded in %f seconds ", args[1], time.Since(start_time).Seconds())
