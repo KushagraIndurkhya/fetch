@@ -31,9 +31,11 @@ var historyCmd = &cobra.Command{
 		fmt.Println("Fetch Download History as of " + fmt.Sprint(time.Now().Format("2006-01-02 15:04:05")) + "\n")
 		core.CreateSqliteDb()
 		db := core.OpenSqliteDb()
-		defer db.Close()
-
-		list := core.GetHistoryList(db, 10)
+		no_of_results, err := cmd.Flags().GetInt("list")
+		if err != nil {
+			fmt.Println(err)
+		}
+		list := core.GetHistoryList(db, no_of_results)
 		for _, v := range list {
 			fmt.Printf("%d\t%s\t%s\t%s\t%s\n", v.Id, v.FileName, v.FileSize, v.Date, v.Success)
 		}
@@ -61,4 +63,5 @@ var cleanCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(historyCmd)
 	historyCmd.AddCommand(cleanCmd)
+	historyCmd.PersistentFlags().Int("list", 10, "Specify Number of Rows in result")
 }

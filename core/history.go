@@ -81,9 +81,9 @@ func InsertHistory(db *sql.DB, hist History) {
 	}
 }
 
-func DeleteHistory(db *sql.DB, date, time, success, error, filepath string) {
-	deleteHistoryQuery := `DELETE FROM history WHERE date = ? AND time = ? AND Success = ? AND Error = ? AND FilePath = ?`
-	_, err := db.Exec(deleteHistoryQuery, date, time, success, error, filepath)
+func DeleteHistory(db *sql.DB, id int) {
+	deleteHistoryQuery := `DELETE FROM history WHERE Id=?`
+	_, err := db.Exec(deleteHistoryQuery, id)
 	if err != nil {
 		log.Println("Error deleting history: ", err)
 	}
