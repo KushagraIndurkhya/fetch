@@ -15,10 +15,10 @@ import (
 type Info struct {
 	url          string
 	NAME         string
-	location     string
-	length       int64
-	pieces       int
-	piece_length int64
+	Location     string
+	Length       int64
+	Pieces       int
+	Piece_length int64
 }
 
 type piece struct {
@@ -54,8 +54,8 @@ func check(e error) {
 }
 func download_Piece(wg *sync.WaitGroup, p *piece, inf Info, verbose bool) {
 	defer wg.Done()
-	os.MkdirAll(inf.location+"/tmp", 0777)
-	addr := inf.location + "/tmp/dat" + fmt.Sprint(p.index)
+	os.MkdirAll(inf.Location+"/tmp", 0777)
+	addr := inf.Location + "/tmp/dat" + fmt.Sprint(p.index)
 	f, err := os.Create(addr)
 	check(err)
 	defer f.Close()
@@ -82,8 +82,8 @@ func download_Piece(wg *sync.WaitGroup, p *piece, inf Info, verbose bool) {
 }
 
 func make_pieces(inf Info) []piece {
-	pieces := make([]piece, inf.pieces)
-	for i := 0; i < inf.pieces; i++ {
+	pieces := make([]piece, inf.Pieces)
+	for i := 0; i < inf.Pieces; i++ {
 		if i == 0 {
 			pieces[i].start = 0
 		} else {
@@ -92,10 +92,10 @@ func make_pieces(inf Info) []piece {
 
 		pieces[i].index = i
 		pieces[i].done = false
-		if i == inf.pieces-1 {
-			pieces[i].end = inf.length - 1
+		if i == inf.Pieces-1 {
+			pieces[i].end = inf.Length - 1
 		} else {
-			pieces[i].end = pieces[i].start + inf.piece_length - 1
+			pieces[i].end = pieces[i].start + inf.Piece_length - 1
 		}
 
 	}
@@ -103,17 +103,17 @@ func make_pieces(inf Info) []piece {
 }
 
 func merge(inf Info, pieces []piece) error {
-	f, err := os.OpenFile(inf.location+inf.NAME, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(inf.Location+inf.NAME, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
-	for i := 0; i < inf.pieces; i++ {
+	for i := 0; i < inf.Pieces; i++ {
 		if !pieces[i].done {
 			log.Fatal("Piece not downloaded")
 			return fmt.Errorf("Piece %d not downloaded", i)
 		}
-		addr := inf.location + "/tmp/dat" + fmt.Sprint(i)
+		addr := inf.Location + "/tmp/dat" + fmt.Sprint(i)
 		data, err := ioutil.ReadFile(addr)
 		check(err)
 		if _, err := f.Write(data); err != nil {
@@ -130,9 +130,10 @@ func merge(inf Info, pieces []piece) error {
 func Download(inf Info, verbose bool) error {
 	//make pieces
 	pieces := make_pieces(inf)
+	fmt.Print(inf)
 	//download pieces
 	var wg sync.WaitGroup
-	for i := 0; i < inf.pieces; i++ {
+	for i := 0; i < inf.Pieces; i++ {
 		wg.Add(1)
 		go download_Piece(&wg, &pieces[i], inf, verbose)
 	}
@@ -144,7 +145,7 @@ func Download(inf Info, verbose bool) error {
 	}
 	err := merge(inf, pieces)
 	//cleanup
-	os.RemoveAll(inf.location + "/tmp")
+	os.RemoveAll(inf.Location + "/tmp")
 	if err != nil {
 		return err
 	}
