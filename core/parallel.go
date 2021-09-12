@@ -103,7 +103,7 @@ func make_pieces(inf Info) []piece {
 }
 
 func merge(inf Info, pieces []piece) error {
-	f, err := os.OpenFile(inf.Location+inf.NAME, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(inf.Location+"/"+inf.NAME, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 		return err
