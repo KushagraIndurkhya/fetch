@@ -1,6 +1,6 @@
-# fetch
-Fetch is a CLI for downloading files written in Go that enables user to get fast downloads by
-utilizing multiple threads and downloading file chunks in parallel
+# Fetch
+Fetch is a lightweight CLI for fast downloading .It breaks a file in chunks and utilizes multiple goroutines to download these chunks in parallel to disks and later merge them.
+
 
 ```
 Usage:
