@@ -35,7 +35,7 @@ var historyCmd = &cobra.Command{
 
 		list := core.GetHistoryList(db, 10)
 		for _, v := range list {
-			fmt.Println(v)
+			fmt.Printf("%d\t%s\t%s\t%s\t%s\n", v.Id, v.FileName, v.FileSize, v.Date, v.Success)
 		}
 
 	},

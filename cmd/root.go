@@ -28,7 +28,7 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "fetch <Command>",
+	Use:   "fetch",
 	Short: "A CLI for fast downloads ",
 	Long: `Fetch is a CLI for downloading files written in Go that enables user to get fast downloads by 
 utilizing multiple threads and downloading file chunks in parallel`,

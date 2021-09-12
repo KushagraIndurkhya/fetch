@@ -17,7 +17,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -29,20 +28,14 @@ import (
 
 // downloadCmd represents the download command
 var downloadCmd = &cobra.Command{
-	Use:   "download",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Use:   "download <URL> <filename>",
+	Short: "Download from url",
+	Long: `
+	Download a file from a download url
+	Make sure you have at least twice free space 
+	on the disk as the size of the file you are downloading
+	`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			cmd.Help()
-			os.Exit(0)
-		}
-
 		core.CreateSqliteDb()
 		db := core.OpenSqliteDb()
 		var hist *core.History = new(core.History)
@@ -97,19 +90,9 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(downloadCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// downloadCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// downloadCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fetch.yaml)")
-	rootCmd.PersistentFlags().String("path", "", "Specify Download Location of the file")
-	rootCmd.PersistentFlags().Bool("verbose", false, "Specify Verbosity of the output")
-	rootCmd.PersistentFlags().Int("threads", 20, "Specify Number of threads to be used")
-	rootCmd.PersistentFlags().Bool("seq", false, "Download the file sequentially instead of parallel downloading")
+	downloadCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.fetch.yaml)")
+	downloadCmd.PersistentFlags().String("path", "", "Specify Download Location of the file")
+	downloadCmd.PersistentFlags().Bool("verbose", false, "Specify Verbosity of the output")
+	downloadCmd.PersistentFlags().Int("threads", 20, "Specify Number of threads to be used")
+	downloadCmd.PersistentFlags().Bool("seq", false, "Download the file sequentially instead of parallel downloading")
 }
