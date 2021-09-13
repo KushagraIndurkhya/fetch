@@ -32,7 +32,6 @@ Fetch took <b>44.23% less time than curl and 50.77% less time than wget </b>
 	$ go build
 	```
 	add the compiled binary to path
-	-
 ## Usage
 ```
 Usage:
