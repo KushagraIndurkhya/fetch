@@ -23,7 +23,9 @@ Fetch took <b>44.23% less time than curl and 50.77% less time than wget </b>
 	```
 	./fetch-install.sh
 	```
-
+- For Windows Systems
+ 	- Download the latest executable from [releases](https://github.com/KushagraIndurkhya/fetch/releases)
+ 		-add it to path
 - For Building from source Clone this repo
 	Build using:
 	```
