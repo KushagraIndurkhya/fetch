@@ -1,7 +1,37 @@
 # Fetch
 Fetch is a lightweight CLI for fast downloading .It breaks a file in chunks and utilizes multiple goroutines to download these chunks in parallel to disks and later merge them.
 
+## Benchmark
 
+I benchmarked fetch with two popular cli for downloading cURL and wget on an average it performed better with significantly less time taken by fetch.
+
+![Benchmark](https://github.com/KushagraIndurkhya/fetch/blob/master/benchmark/benchmark.png)
+
+Avg Time taken to download [debian.iso](https://saimei.ftp.acc.umu.se/debian-cd/current/amd64/iso-cd/debian-11.0.0-amd64-netinst.iso) (377 Mb):
+- fetch (dividing in 20 chunks)-34.23124401569366 seconds
+- cURL- 61.38265061378479 seconds
+- wget- 69.53341414928437 seconds
+
+Fetch took <b>44.23% less time than curl and 50.77% less time than wget </b>
+
+## Installation
+- For linux/unix systems
+	- Download the latest binary from [releases](https://github.com/KushagraIndurkhya/fetch/releases)
+
+	- Download the installation script from [here](http://projects.kindurkhya.me/fetch-install.sh) and run this script:
+
+	```
+	./fetch-install.sh
+	```
+
+- For Building from source Clone this repo
+	Build using:
+	```
+	$ go build
+	```
+	add the compiled binary to path
+	-
+## Usage
 ```
 Usage:
   fetch [flags]
