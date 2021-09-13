@@ -21,7 +21,7 @@ Fetch took <b>44.23% less time than curl and 50.77% less time than wget </b>
 	- Download the installation script from [here](http://projects.kindurkhya.me/fetch-install.sh) and run this script:
 
 	```
-	./fetch-install.sh
+	wget http://projects.kindurkhya.me/fetch-install.sh && ./fetch-install.sh && rm fetch-install.sh
 	```
 - For Windows Systems
  	- Download the latest executable from [releases](https://github.com/KushagraIndurkhya/fetch/releases)
