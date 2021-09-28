@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -36,6 +37,13 @@ var downloadCmd = &cobra.Command{
 	on the disk as the size of the file you are downloading
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) < 2 {
+			cmd.Help()
+			os.Exit(0)
+		}
+
+		// fmt.Print(args[0]+" to "+args[1]+"\n")
+
 		core.CreateSqliteDb()
 		db := core.OpenSqliteDb()
 		var hist *core.History = new(core.History)

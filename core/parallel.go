@@ -128,6 +128,8 @@ func merge(inf Info, pieces []piece) error {
 	return nil
 }
 func Download(inf Info, verbose bool) error {
+
+	fmt.Print("Downloading " + inf.Location + "/" + inf.NAME + "....\n")
 	//make pieces
 	pieces := make_pieces(inf)
 	//download pieces
