@@ -27,7 +27,7 @@ var versionCmd = &cobra.Command{
 	Short: "Display the version of fetch",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		var Version string = "1.0.0"
+		var Version string = "1.0.1"
 		fmt.Println("Fetch Version : " + Version)
 	},
 }
