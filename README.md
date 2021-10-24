@@ -62,7 +62,7 @@ Flags:
 
 ```
 	Example Usage: 
-	fetch download https://saimei.ftp.acc.umu.se/debian-cd/current/amd64/iso-cd/debian-11.0.0-amd64-netinst.iso debian.iso --path="/home/stark/iso" --threads=20 --verbose 
+	fetch download https://saimei.ftp.acc.umu.se/debian-cd/current/amd64/iso-cd/debian-11.0.0-amd64-netinst.iso debian.iso --threads=20 --verbose 
 ```
 
 ## help
